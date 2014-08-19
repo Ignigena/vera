@@ -4,7 +4,8 @@
  * Implements hook_drush_help().
  */
 function vera_drush_help($section) {
-  return dt('It is my very favorite custom Drupal profile helper suite.');
+  if ($section == 'drush:vera')
+    return dt('It is my very favorite custom Drupal profile helper suite.');
 }
 
 /**
@@ -21,6 +22,10 @@ function vera_drush_command() {
       'generate' => 'Generate a starting profile from the latest version of Drupal.',
       'nuke' => 'Destroy and rebuild the existing site from the current installation profile.',
       'test' => 'Run tests against the project install profile.',
+    ),
+    'options' => array(
+      'check' => 'Specific audit check to perform.',
+      'report' => 'Prints a full report.'
     ),
     'aliases' => array('v'),
   );
