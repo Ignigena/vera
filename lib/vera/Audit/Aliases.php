@@ -12,6 +12,7 @@ class Aliases extends \Vera\Command {
 
   private $legacyAliases;
   private $auditAliases;
+  private $hookMenuAliases;
 
   function fire() {
 
@@ -40,15 +41,29 @@ class Aliases extends \Vera\Command {
 
     // Audit the number of aliases found in the legacy database.
     $this->legacyAliases = $this->audit($this->legacyDb);
-    drush_log(dt('Found !count aliases in legacy database.', array('!count' => count($this->legacyAliases))), 'success');
+    drush_log(dt('Found !count aliases in \'' . $this->legacyDb . '\' database.',
+      array('!count' => count($this->legacyAliases))), 'ok');
 
     // Audit the number of aliases found in the source database.
     $this->auditAliases = $this->audit($this->auditDb);
-    drush_log(dt('Found !count aliases in audited database.', array('!count' => count($this->auditAliases))), 'success');
+    drush_log(dt('Found !count aliases in \'' . $this->auditDb . '\' database.',
+      array('!count' => count($this->auditAliases))), 'ok');
 
     // Compare the legacy to the source aliases and see if any are missing.
     if ($diff = array_diff($this->legacyAliases, $this->auditAliases)) {
-      drush_log(dt('There are a total of !count unmigrated aliases.', array('!count' => count($diff))), 'error');
+      // A bit more in-depth check if the alias is defined by a module.
+      foreach ($diff as $index => $alias) {
+        if (drupal_valid_path($alias)) {
+          $this->hookMenuAliases[] = $alias;
+          unset($diff[$index]);
+        }
+      }
+
+      drush_log(dt('!count additional aliases are valid Drupal paths.',
+        array('!count' => count($this->hookMenuAliases))), 'ok');
+
+      drush_log(dt('There are a total of !count unmigrated aliases.',
+        array('!count' => count($diff))), 'error');
 
       // Print the missing aliases if run in Verbose mode only.
       if (drush_get_context('DRUSH_VERBOSE')) {
