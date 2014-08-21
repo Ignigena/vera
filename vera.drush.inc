@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 /**
  * Implements hook_drush_help().
  */
@@ -39,7 +41,6 @@ function vera_drush_command() {
  * @see \Vera\Command
  */
 function drush_vera($command) {
-  require 'vendor/autoload.php';
   $command = '\Vera\Command\\' . ucfirst($command);
 
   if (class_exists($command)) {
