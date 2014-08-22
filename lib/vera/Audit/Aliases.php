@@ -52,8 +52,10 @@ class Aliases extends \Vera\Command {
     // Compare the legacy to the source aliases and see if any are missing.
     if ($diff = array_diff($this->legacyAliases, $this->auditAliases)) {
       // A bit more in-depth check if the alias is defined by a module.
+      // Additionally, if the Redirect module is installed, check for redirects.
       foreach ($diff as $index => $alias) {
-        if (drupal_valid_path($alias)) {
+        if (drupal_valid_path($alias) ||
+          (module_exists('redirect') && redirect_load_by_source($alias))) {
           $this->hookMenuAliases[] = $alias;
           unset($diff[$index]);
         }
