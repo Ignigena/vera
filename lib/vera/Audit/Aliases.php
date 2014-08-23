@@ -13,6 +13,7 @@ class Aliases extends \Vera\Command {
   private $legacyAliases;
   private $auditAliases;
   private $hookMenuAliases;
+  private $aliases404;
 
   function fire() {
 
@@ -63,6 +64,22 @@ class Aliases extends \Vera\Command {
 
       drush_log(dt('!count additional aliases are valid Drupal paths.',
         array('!count' => count($this->hookMenuAliases))), 'ok');
+
+      if (drush_confirm(dt('Would you like to run a 404 check against unmigrated aliases?'))) {
+        $url = drush_prompt(dt('Enter the domain of the legacy site (www.example.com)'));
+
+        drush_log(dt('Please be patient, this will take a moment.'), 'warning');
+        foreach ($diff as $index => $alias) {
+          $check404 = drupal_http_request('http://' . $url . '/' . $alias);
+          if ($check404->code == 404) {
+            $this->aliases404[] = $alias;
+            unset($diff[$index]);
+          }
+        }
+
+        drush_log(dt('!count aliases returned a 404 on the legacy site.',
+          array('!count' => count($this->aliases404))), 'ok');
+      }
 
       drush_log(dt('There are a total of !count unmigrated aliases.',
         array('!count' => count($diff))), 'error');
