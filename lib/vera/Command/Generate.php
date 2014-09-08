@@ -23,12 +23,13 @@ class Generate extends \Vera\Command {
     $fs = new Filesystem();
     $fs->mirror($profile, 'docroot/sites/all/modules/custom/vera');
     drush_log(dt('Installed Vera helper module.'), 'ok');
+
+    $this->chooseDeployment();
   }
 
   function chooseInstallation($exists) {
     $make = $this->promptDirectoryAsOptions('profile', 'Profile/make', 'Choose a Drupal make profile');
     $make = str_replace('Command/Generate.php', 'Profile/make/' . $make . '.make', __FILE__);
-    drush_log(dt('Downloading Drupal, this will take a moment.'), 'warning');
 
     if ($exists) {
       drush_set_option('no-core', TRUE);
@@ -38,6 +39,14 @@ class Generate extends \Vera\Command {
     }
 
     drush_invoke('make', array($make, 'docroot'));
+  }
+
+  function chooseDeployment() {
+    $command = $this->promptDirectoryAsOptions('deploy', 'Profile/Deploy', 'Choose a deployment strategy');
+    $command = '\Vera\Profile\Deploy\\' . ucfirst($command);
+
+    if (class_exists($command))
+      new $command();
   }
 
 }

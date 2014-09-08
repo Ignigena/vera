@@ -79,7 +79,7 @@ class Command {
     // Loop through each file and convert it to an option.
     foreach ($files as $file) {
       $file = preg_replace('/\\.[^.\\s]{3,4}$/', '', $file);
-      $options[$file] = $file;
+      $options[$file] = ucfirst($file);
     }
 
     // Return all available options as a Drush prompt.

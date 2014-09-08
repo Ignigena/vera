@@ -1,0 +1,56 @@
+box: ignigena/pantheon@1.0.0
+no-response-timeout: 20
+services:
+    - wercker/mysql
+
+build:
+  steps:
+    - bundle-install
+    - script:
+        name: compile compass assets
+        code: bundle exec compass compile -e production
+    - script:
+        name: prepare drupal test environment
+        cwd: drupal
+        code: |
+          drush site-install testing --db-url=$WERCKER_MYSQL_URL --site-name=Testing -y
+          drush en simpletest -y
+          drush vset --yes simpletest_verbose FALSE
+          drush runserver --server=builtin 8080 & sleep 5
+    - script:
+        name: run drupal tests
+        cwd: drupal
+        code: |
+          php ./scripts/run-tests.sh --url http://127.0.0.1:8080 --concurrency 10 --php $HOME/.phpenv/versions/5.4/php '$TEST_GROUP'
+
+deploy:
+  steps:
+    - add-ssh-key:
+        keyname: PANTHEON_KEY
+    - script:
+        name: use forked version of terminus
+        code: |
+          cd $HOME/.drush/terminus
+          git remote set-url origin https://github.com/Ignigena/terminus.git
+          git pull
+          composer update --no-dev
+          drush cc drush
+    - script:
+        name: terminus authentication
+        code: |
+          drush pauth $TERMINUS_EMAIL --password=$TERMINUS_PASS
+          drush paliases
+    - script:
+        name: prepare pantheon environment
+        code: |
+          drush psite-cmode $TERMINUS_SITE dev sftp & sleep 30
+    - script:
+        name: deploy code to pantheon
+        code: |
+          rm $HOME/.ssh/known_hosts
+          drush --ssh-options="-p 2222 -o StrictHostKeyChecking=no" -y rsync ./drupal/ @pantheon.$TERMINUS_SITE.dev:code/ --delete --exclude-sites  & sleep 60
+    - script:
+        name: commit and cleanup
+        code: |
+          drush psite-commit $TERMINUS_UUID dev --message="Wercker deployment by $WERCKER_STARTED_BY"
+          drush psite-wake $TERMINUS_UUID dev
