@@ -25,7 +25,7 @@ class Generate extends \Vera\Command {
   }
 
   function chooseInstallation($exists) {
-    $make = $this->promptDirectoryAsOptions('profile', 'Profile/make/', 'Choose a Drupal make profile');
+    $make = $this->promptDirectoryAsOptions('profile', 'Profile/make', 'Choose a Drupal make profile');
     $make = str_replace('Command/Generate.php', 'Profile/make/' . $make . '.make', __FILE__);
     drush_log(dt('Downloading Drupal, this will take a moment.'), 'warning');
 
