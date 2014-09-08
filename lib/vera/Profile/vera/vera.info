@@ -1,0 +1,14 @@
+name = Vera
+package = Development
+core = 7.x
+
+dependencies[] = block
+dependencies[] = field_ui
+dependencies[] = file
+dependencies[] = image
+dependencies[] = menu
+dependencies[] = taxonomy
+dependencies[] = simpletest
+
+files[] = vera.taxonomy.inc
+files[] = vera.test

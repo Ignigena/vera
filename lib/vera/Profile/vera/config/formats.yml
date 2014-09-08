@@ -1,0 +1,31 @@
+filtered_html_format:
+  format: filtered_html
+  name: 'Filtered HTML'
+  weight: 0
+  filters:
+    filter_url:
+      weight: 0
+      status: 1
+    filter_html:
+      weight: 1
+      status: 1
+    filter_autop:
+      weight: 1
+      status: 1
+    filter_htmlcorrector:
+      weight: 10
+      status: 1
+full_html_fullformat:
+  format: full_html
+  name: 'Full HTML'
+  weight: 1
+  filters:
+    filter_url:
+      weight: 0
+      status: 1
+    filter_autop:
+      weight: 1
+      status: 1
+    filter_htmlcorrector:
+      weight: 10
+      status: 1

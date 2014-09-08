@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function vera_menu() {
+  $items['admin/structure/menu/audit'] = array(
+    'title' => 'Audit',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 6,
+    'page callback' => '_vera_audit_page_menu',
+    'file' => 'audit/menu.audit.inc',
+    'access arguments' => array('administer menu'),
+  );
+  return $items;
+}

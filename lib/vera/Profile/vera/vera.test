@@ -1,0 +1,62 @@
+<?php
+
+class veraWebTestCase extends DrupalWebTestCase {
+
+  public $account;
+
+  function setUp() {
+    parent::setUp('vera');
+
+    if (isset($this->permissions)) {
+      $this->account = $this->drupalCreateUser($this->permissions);
+    }
+  }
+
+  public static function veraTest($name, $description = '', $group = '') {
+    if (empty($description) && !empty($name)) {
+      $description = 'Test all ' . strtolower($name) . ' stories.';
+    }
+
+    if (empty($group)) {
+      $group = variable_get('site_name', 'vera');
+    }
+
+    return array(
+      'name' => $name,
+      'description' => $description,
+      'group' => $group
+    );
+  }
+}
+
+class veraTaxonomyTestCase extends veraWebTestCase {
+  public static function getInfo() {
+    return parent::veraTest('Taxonomy', 'Test all taxonomy helper functions.');
+  }
+
+  public function testTaxonomyHelperFunctions() {
+    module_load_include('inc', 'vera', 'vera.taxonomy');
+    $helper = new veraTaxonomyHelper();
+    
+    // Create a new tag in the default "Tags" vocabulary.
+    $new_id = $helper->term_create('This is a Tag', 1);
+    $this->drupalGet('taxonomy/term/' . $new_id);
+    $this->assertResponse(200, 'Taxonomy term exists.');
+
+    // Create a new tag with children in the "Tags" vocabulary.
+    $parent_id = $helper->term_create_with_children('Parent Tag', 1, array('Child 1', 'Child 2'));
+    $this->drupalGet('taxonomy/term/' . $parent_id);
+    $this->assertResponse(200, 'Parent taxonomy term exists.');
+    $this->drupalGet('taxonomy/term/' . ($parent_id+1));
+    $this->assertResponse(200, '1st child term exists.');
+    $this->drupalGet('taxonomy/term/' . ($parent_id+2));
+    $this->assertResponse(200, '2nd child term exists.');
+
+    // Bulk create terms within the "Tags" vocabulary.
+    $helper->term_create_bulk(1, array('Bulk Term 1', 'Bulk Term 2'));
+    $this->drupalGet('taxonomy/term/' . ($parent_id+3));
+    $this->assertResponse(200, '1st bulk term exists.');
+    $this->drupalGet('taxonomy/term/' . ($parent_id+4));
+    $this->assertResponse(200, '2nd bulk term exists.');
+  }
+}
