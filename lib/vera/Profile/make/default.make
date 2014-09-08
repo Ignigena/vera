@@ -56,3 +56,9 @@ projects[views][version] = "3.8"
 
 projects[xmlsitemap][subdir] = "contrib"
 projects[xmlsitemap][version] = "2.0"
+
+projects[devel][subdir] = "development"
+projects[devel][version] = "1.5"
+
+projects[coder][subdir] = "development"
+projects[coder][version] = "2.2"
