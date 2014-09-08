@@ -1,5 +1,8 @@
 {
     "autoload": {
       "psr-4": {"Vera\\": "lib/vera"}
+    },
+    "require": {
+      "symfony/filesystem": "2.*"
     }
 }
