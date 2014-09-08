@@ -56,4 +56,35 @@ class Command {
 
   }
 
+  /**
+   * Utility function to convert a directory of files into prompt options.
+   *
+   * @param string $drush_option
+   *   The Drush option key to check before displaying the prompt.
+   * @param string $dir
+   *   The directory containing the files to be used as options.
+   * @param string $question
+   *   The question text used in the prompt.
+   */
+  public function promptDirectoryAsOptions($drush_option, $dir, $question) {
+
+    // Check for the existence of the Drush option.
+    if (drush_get_option($drush_option))
+      return drush_get_option($drush_option);
+
+    // Get the contents of the specified directory.
+    $directory = str_replace('Command.php', $dir, __FILE__);
+    $files = array_diff(scandir($directory), array('..', '.'));
+
+    // Loop through each file and convert it to an option.
+    foreach ($files as $file) {
+      $file = preg_replace('/\\.[^.\\s]{3,4}$/', '', $file);
+      $options[$file] = $file;
+    }
+
+    // Return all available options as a Drush prompt.
+    return drush_choice($options, $question);
+
+  }
+
 }
