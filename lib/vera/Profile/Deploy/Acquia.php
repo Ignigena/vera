@@ -24,6 +24,7 @@ if (file_exists('/var/www/site-php')) {
 ACQUIA;
 
     file_put_contents('docroot/sites/default/settings.php', $settings);
+    drush_log(dt('Added Acquia require line to settings.php.'), 'ok');
   }
 
 }
