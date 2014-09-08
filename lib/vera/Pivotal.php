@@ -38,7 +38,7 @@ class Pivotal {
     if (empty($this->project))
       throw new Exception('Project required.');
 
-    return json_decode($this->get('projects/' . $this->project . '/stories')->execute());
+    return json_decode($this->get('projects/' . $this->project . '/stories?limit=500')->execute());
   }
 
   function __destruct() {
