@@ -42,11 +42,20 @@ projects[navbar][version] = "1.4"
 projects[pathauto][subdir] = "contrib"
 projects[pathauto][version] = "1.2"
 
+projects[redirect][subdir] = "contrib"
+projects[redirect][version] = "1.0-rc1"
+
 projects[rules][subdir] = "contrib"
 projects[rules][version] = "2.7"
 
+projects[seckit][subdir] = "contrib"
+projects[seckit][version] = "1.9"
+
 projects[token][subdir] = "contrib"
 projects[token][version] = "1.5"
+
+projects[username_enumeration_prevention][subdir] = "contrib"
+projects[username_enumeration_prevention][version] = "1.0"
 
 projects[variable][subdir] = "contrib"
 projects[variable][version] = "2.5"
