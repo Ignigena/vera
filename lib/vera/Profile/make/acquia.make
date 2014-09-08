@@ -56,3 +56,9 @@ projects[views][version] = "3.8"
 
 projects[xmlsitemap][subdir] = "contrib"
 projects[xmlsitemap][version] = "2.0"
+
+projects[acquia_connector][subdir] = "platform"
+projects[acquia_connector][version] = "2.14"
+
+projects[memcache][subdir] = "platform"
+projects[memcache][version] = "1.2"

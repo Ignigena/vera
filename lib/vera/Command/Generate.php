@@ -22,6 +22,7 @@ class Generate extends \Vera\Command {
     $profile = str_replace('Command/Generate.php', 'Profile/vera', __FILE__);
     $fs = new Filesystem();
     $fs->mirror($profile, 'docroot/sites/all/modules/custom/vera');
+    drush_log(dt('Installed Vera helper module.'), 'ok');
   }
 
   function chooseInstallation($exists) {
