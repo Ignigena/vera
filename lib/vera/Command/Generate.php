@@ -57,7 +57,7 @@ if [ "\$RESULT" != "$this->profileMachine" ]; then
 fi
 
 # Install the Drupal site profile.
-cd docroot && drush site-install $this->profileMachine --db-url=mysql://root@localhost/$this->profileMachine --site-name=$this->profile --account-name=support -y
+cd docroot && drush site-install $this->profileMachine --db-url=mysql://root@localhost/$this->profileMachine --site-name="$this->profile" --account-name=support -y
 drush upwd support --password=admin
 SETUP;
     file_put_contents('setup.sh', $setup);
@@ -124,9 +124,10 @@ INFO;
 
     $makeFile = file_get_contents($this->make);
     preg_match_all('/projects\[(.*)\]\[version\]/', $makeFile, $modules);
+    preg_match_all('/projects\[(.*)\]\[exclude\]/', $makeFile, $modules_exclude);
     asort($modules[1]);
     foreach ($modules[1] as $module) {
-      if ($module == 'drupal')
+      if ($module == 'drupal' || (isset($modules_exclude[1]) && in_array($module, $modules_exclude[1])))
         continue;
       $info .= 'dependencies[] = ' . $module . PHP_EOL;
     }
