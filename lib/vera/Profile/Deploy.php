@@ -8,12 +8,6 @@ class Deploy {
 
   function __construct() {
     $this->prepareSupportFiles();
-
-    symlink('docroot', 'htdocs');
-    drush_log(dt('Created a symlink from htdocs -> docroot.'), 'ok');
-    
-    file_put_contents('.gitignore', 'docroot/sites/all/modules/development');
-    drush_log(dt('Ignore development modules from GIT.'), 'ok');
   }
 
   function prepareSupportFiles() {
