@@ -12,5 +12,13 @@ function vera_menu() {
     'file' => 'audit/menu.audit.inc',
     'access arguments' => array('administer menu'),
   );
+  $items['admin/modules/audit'] = array(
+    'title' => 'Audit',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 99,
+    'page callback' => '_vera_audit_page_modules',
+    'file' => 'audit/modules.audit.inc',
+    'access arguments' => array('administer modules'),
+  );
   return $items;
 }
