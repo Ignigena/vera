@@ -34,7 +34,7 @@ class Generate extends \Vera\Command {
     drush_log(dt('Created a symlink from htdocs -> docroot.'), 'ok');
     
     file_put_contents('.gitignore', 'docroot/sites/all/modules/development');
-    drush_log(dt('Ignore development modules from GIT.'), 'ok');
+    drush_log(dt('Ignoring development modules from GIT.'), 'ok');
 
     $this->generateProfile();
     $this->generateTests();
@@ -49,12 +49,24 @@ chmod 755 .git/hooks/pre-commit
 
 # Install all Composer dependencies.
 composer install -d ./docroot
+
+# Create the database table if it doesn't already exist.
+RESULT=`mysql -u root --skip-column-names -e "SHOW DATABASES LIKE '$this->profileMachine'"`
+if [ "\$RESULT" != "$this->profileMachine" ]; then
+  mysql -u root -e "CREATE DATABASE $this->profileMachine"
+fi
+
+# Install the Drupal site profile.
+cd docroot && drush site-install $this->profileMachine --db-url=mysql://root@localhost/$this->profileMachine --site-name=$this->profile --account-name=support -y
+drush upwd support --password=admin
 SETUP;
     file_put_contents('setup.sh', $setup);
-    chmod('setup.sh', '755');
+    chmod('setup.sh', 0755);
     drush_log(dt('Created setup script.'), 'ok');
 
     $this->createReadMe();
+    drush_log(dt('Running setup script, this may take a moment.'), 'warning');
+    system('./setup.sh');
   }
 
   function chooseInstallation($exists) {
@@ -88,7 +100,6 @@ SETUP;
 }
 COMPOSER;
     file_put_contents('docroot/composer.json', $composer);
-    system('composer install -d ./docroot');
 
     $this->profile = parent::getSetting('name', 'Enter the name of the Drupal site to create');
     $this->profileMachine = strtolower(preg_replace('/[^a-zA-Z]+/', '', $this->profile));

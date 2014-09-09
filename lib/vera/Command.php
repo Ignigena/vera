@@ -105,7 +105,7 @@ class Command {
     }
 
     // Return all available options as a Drush prompt.
-    return drush_choice($options, $question);
+    return drush_choice($options, $question . ':');
 
   }
 
