@@ -40,6 +40,20 @@ class Generate extends \Vera\Command {
 
     $this->generateProfile();
     $this->generateTests();
+
+    $setup = <<<SETUP
+#!/bin/sh
+
+# Add a pre-commit hook to compile SASS using Compass.
+curl -silent https://gist.githubusercontent.com/gheydon/6171813/raw/pre-commit > .git/hooks/pre-commit
+chmod 755 .git/hooks/pre-commit
+
+# Install all Composer dependencies.
+composer install -d ./docroot
+SETUP;
+    file_put_contents('setup.sh', $setup);
+    chmod('setup.sh', '755');
+    drush_log(dt('Created setup script.'), 'ok');
   }
 
   function chooseInstallation($exists) {
