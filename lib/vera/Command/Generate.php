@@ -125,17 +125,8 @@ dependencies[] = vera
 
 
 INFO;
-
-    $makeFile = file_get_contents($this->make);
-    preg_match_all('/projects\[(.*)\]\[version\]/', $makeFile, $modules);
-    preg_match_all('/projects\[(.*)\]\[exclude\]/', $makeFile, $modules_exclude);
-    asort($modules[1]);
-    foreach ($modules[1] as $module) {
-      if ($module == 'drupal' || (isset($modules_exclude[1]) && in_array($module, $modules_exclude[1])))
-        continue;
-      $info .= 'dependencies[] = ' . $module . PHP_EOL;
-    }
-
+    $info .= $this->parseMakeModules($this->make);
+    $info .= $this->parseMakeModules(str_replace('Command/Generate.php', 'Profile/make/common.make.inc', __FILE__));
     $info .= PHP_EOL . 'files[] = tests/' . $this->profileMachine . '.test' . PHP_EOL;
     file_put_contents($this->profilePath . '/' . $this->profileMachine . '.info', $info);
 
@@ -275,6 +266,23 @@ module-specific features orcapabilities.)
 README;
     file_put_contents('README.md', $readme);
     drush_log(dt('Added README file to project.'), 'ok');
+  }
+
+  private function parseMakeModules($path) {
+    $makeFile = file_get_contents($path);
+    preg_match_all('/projects\[(.*)\]\[version\]/', $makeFile, $modules);
+    preg_match_all('/projects\[(.*)\]\[exclude\]/', $makeFile, $modules_exclude);
+    asort($modules[1]);
+
+    $results = '';
+
+    foreach ($modules[1] as $module) {
+      if ($module == 'drupal' || (isset($modules_exclude[1]) && in_array($module, $modules_exclude[1])))
+        continue;
+      $results .= 'dependencies[] = ' . $module . PHP_EOL;
+    }
+
+    return $results;
   }
 
 }
