@@ -30,8 +30,6 @@ class Generate extends \Vera\Command {
     $fs->mirror($profile, 'docroot/sites/all/modules/custom/vera');
     drush_log(dt('Installed Vera helper module.'), 'ok');
 
-    $this->chooseDeployment();
-
     symlink('docroot', 'htdocs');
     drush_log(dt('Created a symlink from htdocs -> docroot.'), 'ok');
     
@@ -40,6 +38,7 @@ class Generate extends \Vera\Command {
 
     $this->generateProfile();
     $this->generateTests();
+    $this->chooseDeployment();
 
     $setup = <<<SETUP
 #!/bin/sh
@@ -75,7 +74,7 @@ SETUP;
     $command = '\Vera\Profile\Deploy\\' . ucfirst($command);
 
     if (class_exists($command))
-      new $command();
+      new $command($this->profileClass);
   }
 
   function generateProfile() {
@@ -119,7 +118,7 @@ INFO;
       $info .= 'dependencies[] = ' . $module . PHP_EOL;
     }
 
-    $info .= PHP_EOL . 'files[] = tests/emergo.test' . PHP_EOL;
+    $info .= PHP_EOL . 'files[] = tests/' . $this->profileMachine . '.test' . PHP_EOL;
     file_put_contents($this->profilePath . '/' . $this->profileMachine . '.info', $info);
 
     $install = <<<INSTALL

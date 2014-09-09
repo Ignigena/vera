@@ -6,8 +6,11 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class Deploy {
 
-  function __construct() {
+  public $profile;
+
+  function __construct($profile) {
     $this->prepareSupportFiles();
+    $this->profile = $profile;
   }
 
   function prepareSupportFiles() {

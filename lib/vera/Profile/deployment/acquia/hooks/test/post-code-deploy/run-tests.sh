@@ -8,7 +8,7 @@ site="$1"
 target_env="$2"
 
 # Select the tests to run. Run "drush help test-run" for options.
-TESTS="UserRegistrationTestCase"
+TESTS="{{TEST}}"
 
 # Enable the simpletest module if it is not already enabled.
 drush @$site.$target_env pm-enable simpletest --yes
