@@ -67,6 +67,7 @@ class Generate extends \Vera\Command {
   function generateProfile() {
     $this->profile = parent::getSetting('name', 'Enter the name of the install profile to create');
     $this->profileMachine = strtolower(preg_replace('/[^a-zA-Z]+/', '', $this->profile));
+    parent::saveSetting('profile', $this->profileMachine);
     $this->profileClass = preg_replace('/[^a-zA-Z]+/', '', $this->profile);
 
     $this->profilePath = 'docroot/profiles/' . $this->profileMachine;
