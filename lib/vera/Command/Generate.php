@@ -53,6 +53,8 @@ SETUP;
     file_put_contents('setup.sh', $setup);
     chmod('setup.sh', '755');
     drush_log(dt('Created setup script.'), 'ok');
+
+    $this->createReadMe();
   }
 
   function chooseInstallation($exists) {
@@ -88,7 +90,7 @@ COMPOSER;
     file_put_contents('docroot/composer.json', $composer);
     system('composer install -d ./docroot');
 
-    $this->profile = parent::getSetting('name', 'Enter the name of the install profile to create');
+    $this->profile = parent::getSetting('name', 'Enter the name of the Drupal site to create');
     $this->profileMachine = strtolower(preg_replace('/[^a-zA-Z]+/', '', $this->profile));
     parent::saveSetting('profile', $this->profileMachine);
     $this->profileClass = preg_replace('/[^a-zA-Z]+/', '', $this->profile);
@@ -216,6 +218,47 @@ class {$this->profileClass}DistributionTestCase extends {$this->profileClass}Web
 TEST;
     file_put_contents($this->profilePath . '/tests/' . $this->profileMachine . '.test', $test);
     drush_log(dt('Added basic testing framework to install profile.'), 'ok');
+  }
+
+  function createReadMe() {
+    $readme = <<<README
+# $this->profile
+
+A Drupal website created with Vera.
+
+### Getting Started ###
+
+#### Technical Requirements ####
+
+* PHP 5.4+
+* Composer
+* Vera
+
+#### Installation and Setup ####
+
+* Clone the codebase repo locally.
+* Run `./setup.sh` to configure GIT hook and install Composer dependencies.
+* Default credentials are `support`/`admin`
+
+To rebuild installation from scratch during development run `vera nuke`
+
+### Contribution guidelines ###
+
+* Each epic has a corresponding test group defined in
+`profiles/{$this->profileMachine}/tests`.
+* Each story requires a corresponding passing test in the group for that epic.
+* Test coverage can be verified against Pivotal by running `vera coverage`.
+* Prior to code freeze, all core features must be implemented within
+installation profile. A complete environment must be created during the
+installation process with no database cloning required.
+* Post code freeze, all structural changes to existing features will require a
+corresponding update hook. Update hooks should be placed either in the install
+profile (for generic/platform features or to enable modules) or within an
+already-exisitng custom module relating to the feature (to update
+module-specific features orcapabilities.)
+README;
+    file_put_contents('README.md', $readme);
+    drush_log(dt('Added README file to project.'), 'ok');
   }
 
 }
