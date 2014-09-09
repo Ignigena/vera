@@ -24,7 +24,7 @@ class Command {
 
     // Read the Vera settings file.
     $settings = file_get_contents($this->settingsFile, 'r');
-    $settings = json_decode($settings);
+    $settings = (object)json_decode($settings);
 
     // If the key exists, no further action required.
     if ($settings->$key)
@@ -41,7 +41,7 @@ class Command {
 
   private function writeSettings($settings) {
     $fp = fopen($this->settingsFile, 'w');
-    fwrite($fp, json_encode($settings));
+    fwrite($fp, json_encode($settings, JSON_PRETTY_PRINT));
     fclose($fp);
   }
 
