@@ -12,6 +12,10 @@ class Command {
 
   function __construct() {
     $this->settingsFile = getcwd() . '/vera.json';
+
+    if (!file_exists($this->settingsFile) && file_exists(getcwd() . '/../vera.json'))
+      $this->settingsFile = getcwd() . '/../vera.json';
+
     $this->fire();
   }
 
