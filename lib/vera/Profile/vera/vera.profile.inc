@@ -1,5 +1,8 @@
 <?php
 
+require_once DRUPAL_ROOT . '/vendor/autoload.php';
+use Symfony\Component\Yaml\Yaml;
+
 class VeraProfile {
   public $theme;
   public $text_formats;
@@ -45,23 +48,32 @@ class VeraProfile {
   }
 
   public function parseManifest($manifest, &$merge, $t = array()) {
-    if (empty($merge) || !is_array($merge)) {
+    if (empty($merge) || !is_array($merge))
       $merge = array();
+
+    // If no manifest exists for the install profile, stop here.
+    if (!file_exists($this->profile . '/config/' . $manifest . '.yml')) {
+      $manifest = array();
     }
-    $manifest = yaml_parse_file($this->profile . '/config/' . $manifest . '.yml');
-    if (!empty($t)) {
-      foreach ($manifest as $row) {
-        foreach ($t as $field) {
-          if (isset($row[$field]))
-            $row[$field] = st($row[$field]);
+    // Otherwise, parse the manifest file into an array.
+    else {
+      $manifest = Yaml::parse(file_get_contents($this->profile . '/config/' . $manifest . '.yml'));
+      if (!empty($t)) {
+        foreach ($manifest as $row) {
+          foreach ($t as $field) {
+            if (isset($row[$field]))
+              $row[$field] = st($row[$field]);
+          }
         }
       }
     }
+
+    // Merge the contents of the manifest into the array.
     $merge = array_merge($merge, $manifest);
   }
 
   public function parseBlockManifest($manifest = 'blocks') {
-    $new_blocks = yaml_parse_file($this->profile . '/config/' . $manifest . '.yml');
+    $new_blocks = Yaml::parse(file_get_contents($this->profile . '/config/' . $manifest . '.yml'));
     $this->blocks = array_merge($this->blocks, $new_blocks);
   }
 
@@ -74,6 +86,11 @@ class VeraProfile {
   }
 
   public function createContentTypes() {
+
+    // If no content types are defined, stop now.
+    if (!is_array($this->content_types) || empty($this->content_types))
+      return;
+
     // Create all defined content types.
     foreach ($this->content_types as $type) {
       $type = node_type_set_defaults($type);
