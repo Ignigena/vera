@@ -20,11 +20,17 @@ class Coverage extends \Vera\Command {
 
   public $epics;
   public $stories;
+  public $tests;
   public $features;
   public $ignored;
   public $missed;
 
   public $coverage;
+
+  function __construct() {
+    $this->ignored = array();
+    parent::__construct();
+  }
 
   function fire() {
 
@@ -47,7 +53,7 @@ class Coverage extends \Vera\Command {
 
     // Loop through the epics.
     foreach ($this->epics as $epic) {
-      $this->tests[$epic->id] = $epic->name;
+      $this->tests[$epic->id] = strtolower($epic->name);
     }
 
     // Loop through the stories.
@@ -78,6 +84,9 @@ class Coverage extends \Vera\Command {
    * If a test is found, $this->features is marked TRUE.
    */
   function verifyCoverage() {
+    if (empty($this->features))
+      return;
+
     parent::bootstrap();
     $profile = DRUPAL_ROOT . '/profiles/' . drupal_get_profile() . '/tests/';
     $tests = array_diff(scandir($profile), array('..', '.'));
