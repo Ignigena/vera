@@ -17,14 +17,8 @@ class Command {
 
   public function getSetting($key, $prompt) {
 
-    // Ensure Vera settings file exists or create one if it doesn't.
-    if (!file_exists($this->settingsFile)) {
-      $this->writeSettings(array());
-    }
-
     // Read the Vera settings file.
-    $settings = file_get_contents($this->settingsFile, 'r');
-    $settings = (object)json_decode($settings);
+    $settings = $this->read();
 
     // If the key exists, no further action required.
     if ($settings->$key)
@@ -36,6 +30,34 @@ class Command {
 
     // Return the requested key.
     return $settings->$key;
+
+  }
+
+  public function saveSetting($key, $value) {
+
+    // Read the Vera settings file.
+    $settings = $this->read();
+
+    // Save the setting value.
+    $settings->$key = $value;
+    $this->writeSettings($settings);
+
+    return TRUE;
+
+  }
+
+  private function read() {
+
+    // Ensure Vera settings file exists or create one if it doesn't.
+    if (!file_exists($this->settingsFile)) {
+      $this->writeSettings(array());
+    }
+
+    // Read the Vera settings file.
+    $settings = file_get_contents($this->settingsFile, 'r');
+
+    // Return the encoded settings as an object.
+    return (object)json_decode($settings);
 
   }
 
