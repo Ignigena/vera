@@ -63,6 +63,11 @@ SETUP;
     chmod('setup.sh', 0755);
     drush_log(dt('Created setup script.'), 'ok');
 
+    $htaccess = file_get_contents('docroot/.htaccess');
+    $htaccess = str_replace('# RewriteBase /' . PHP_EOL, 'RewriteBase /' . PHP_EOL, $htaccess);
+    file_put_contents('docroot/.htaccess', $htaccess);
+    drush_log(dt('Modified .htaccess for clean URL functionality.'), 'ok');
+
     $this->createReadMe();
     drush_log(dt('Running setup script, this may take a moment.'), 'warning');
     system('./setup.sh');
