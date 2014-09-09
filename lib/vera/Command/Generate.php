@@ -65,6 +65,16 @@ class Generate extends \Vera\Command {
   }
 
   function generateProfile() {
+    $composer = <<<COMPOSER
+{
+  "require": {
+    "symfony/yaml": "2.5.*"
+  }
+}
+COMPOSER;
+    file_put_contents('docroot/composer.json', $composer);
+    system('composer install -d ./docroot');
+
     $this->profile = parent::getSetting('name', 'Enter the name of the install profile to create');
     $this->profileMachine = strtolower(preg_replace('/[^a-zA-Z]+/', '', $this->profile));
     parent::saveSetting('profile', $this->profileMachine);
