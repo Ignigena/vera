@@ -62,3 +62,23 @@ projects[devel][version] = "1.5"
 
 projects[coder][subdir] = "development"
 projects[coder][version] = "2.2"
+
+libraries[backbone][download][type] = "get"
+libraries[backbone][download][url] = "https://github.com/jashkenas/backbone/archive/1.0.0.zip"
+libraries[backbone][directory_name] = "backbone"
+libraries[backbone][type] = "library"
+
+libraries[foundation][download][type] = "get"
+libraries[foundation][download][url] = "http://foundation.zurb.com/cdn/releases/foundation-5.4.0.zip"
+libraries[foundation][directory_name] = "foundation"
+libraries[foundation][type] = "library"
+
+libraries[modernizr][download][type] = "get"
+libraries[modernizr][download][url] = "https://github.com/Modernizr/Modernizr/archive/v2.7.1.zip"
+libraries[modernizr][directory_name] = "modernizr"
+libraries[modernizr][type] = "library"
+
+libraries[underscore][download][type] = "get"
+libraries[underscore][download][url] = "https://github.com/jashkenas/underscore/archive/1.5.0.zip"
+libraries[underscore][directory_name] = "underscore"
+libraries[underscore][type] = "library"
