@@ -58,7 +58,6 @@ fi
 
 # Install the Drupal site profile.
 cd docroot && drush site-install $this->profileMachine --db-url=mysql://root@localhost/$this->profileMachine --site-name="$this->profile" --account-name=support -y
-drush upwd support --password=admin
 SETUP;
     file_put_contents('setup.sh', $setup);
     chmod('setup.sh', 0755);
@@ -248,9 +247,9 @@ A Drupal website created with Vera.
 
 #### Installation and Setup ####
 
-* Clone the codebase repo locally.
+* Clone the codebase repo locally to `~/sites/{$this->profileMachine}`.
 * Run `./setup.sh` to configure GIT hook and install Composer dependencies.
-* Default credentials are `support`/`admin`
+* Credentials are supplied once the setup script has finished.
 
 To rebuild installation from scratch during development run `vera nuke`
 
