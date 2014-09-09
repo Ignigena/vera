@@ -33,6 +33,9 @@ projects[link][version] = "1.2"
 projects[media][subdir] = "contrib"
 projects[media][version] = "2.0-alpha3"
 
+projects[module_filter][subdir] = "contrib"
+projects[module_filter][version] = "2.0-alpha2"
+
 projects[navbar][subdir] = "contrib"
 projects[navbar][version] = "1.4"
 
