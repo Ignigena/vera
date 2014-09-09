@@ -100,6 +100,9 @@ class Command {
 
     // Loop through each file and convert it to an option.
     foreach ($files as $file) {
+      // Skip over any common files which aren't standalone.
+      if (strpos($file, 'common') === 0)
+        continue;
       $file = preg_replace('/\\.[^.\\s]{3,4}$/', '', $file);
       $options[$file] = ucfirst($file);
     }
