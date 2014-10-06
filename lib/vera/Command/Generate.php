@@ -154,7 +154,7 @@ class {$this->profileClass}Profile extends VeraProfile {
 
   function __construct() {
     parent::__construct();
-    $this->profile = drupal_get_path('profile', '{$this->profileMachine}');
+    \$this->profile = drupal_get_path('profile', '{$this->profileMachine}');
   }
 
   function install() {
